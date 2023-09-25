@@ -1,0 +1,6 @@
+services: 
+  flask: 
+    image: flask_test 
+    stop_signal: SIGINT
+    ports: 
+      - '5000:5000'
