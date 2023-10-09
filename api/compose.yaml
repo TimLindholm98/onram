@@ -1,0 +1,20 @@
+services: 
+  flask_sql_api: 
+    image: flask_sql_api 
+    stop_signal: SIGINT
+    security_opt:
+      - label:disable
+    ports: 
+      - '5000:5000'
+
+  webui:
+    image: ubi9/python-39
+    container_name: http
+    security_opt:
+      - label:disable
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./http:/var/www:U
+    command: python3 -m http.server --directory /var/www/ 8080
+
