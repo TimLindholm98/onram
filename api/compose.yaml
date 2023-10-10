@@ -22,6 +22,7 @@ services:
      - ./dbdata:/var/lib/mysql
      - ./init.sql:/docker-entrypoint-initdb.d/setup.sql
 
+# Not actually needed.
   adminer:
     image: adminer
     restart: always
