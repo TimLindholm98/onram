@@ -7,14 +7,23 @@ services:
     ports: 
       - '5000:5000'
 
-  webui:
-    image: ubi9/python-39
-    container_name: http
+  db:
+    image: mysql
     security_opt:
       - label:disable
+    environment:
+      - MYSQL_ROOT_PASSWORD=S3cret
+      - MYSQL_PASSWORD=An0thrS3crt
+      - MYSQL_USER=onram
+      - MYSQL_DATABASE=onram
     ports:
-      - "8080:8080"
+      - "3306:3306"
     volumes:
-      - ./http:/var/www:U
-    command: python3 -m http.server --directory /var/www/ 8080
+     - ./dbdata:/var/lib/mysql
+     - ./init.sql:/docker-entrypoint-initdb.d/setup.sql
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

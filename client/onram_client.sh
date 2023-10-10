@@ -74,6 +74,10 @@ printf "%s" "$json_string" > /tmp/onram_client.json
 # curl -X POST -H "Content-Type: application/json" -d @FILENAME DESTINATION
 
 curl --header "Content-Type: application/json" \
+  --request "DELETE" \
+  http://10.21.30.200:5000/data/$(get_hostname)
+
+curl --header "Content-Type: application/json" \
   --request "POST" \
   --data "@/tmp/onram_client.json" \
-  http://localhost:3000/api/login
+  http://10.21.30.200:5000/data

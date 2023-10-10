@@ -1,7 +1,7 @@
 {
-    "hostname": "os-200",
-    "ip": "10.21.30.200",
-    "ipmi": "10.21.30.201",
+    "hostname": "os-1337",
+    "ip": "10.21.30.1337",
+    "ipmi": "10.21.30.1338",
     "cpu": "AMD EPYC 7713 64-Core Processor",
     "threads": "32",
     "ram": "200G",

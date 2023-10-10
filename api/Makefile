@@ -1,7 +1,17 @@
 build : 
-	docker build --tag flask_sql_api .
+	podman build --tag flask_sql_api .
 
-# restart : 
-# 	docker-compose down && docker-compose up -d
+down : 
+	podman-compose down
+	
+up:
+	podman-compose up -d
 
-# upgrade : build restart
+remove_data:
+	rm -rf ./dbdata
+
+upgrade : down build up
+
+reset: down remove_data up
+
+reinstall: down remove_data build up
