@@ -90,5 +90,10 @@ stop_client(){
 }
 
 
-
-
+if [[ -z "$@" ]]; then
+  echo "Please add start or stop as \$1 argument"
+elif [[ "$1" == "start" ]]; then
+    start_client
+elif [[ "$1" == "stop" ]]; then
+    stop_client
+fi
