@@ -51,33 +51,44 @@ list_all_hdd(){
     echo "$(lsblk -n -o name,size,rota,type /dev/sd* 2> /dev/null | awk '$NF ~ /disk/{print $1 "," $2 "," $3}' |  awk -F, '$NF ~ /1/{print $1 "," $2}')"
 }
 
-# https://stackoverflow.com/questions/48470049/build-a-json-string-with-bash-variables
 
-# Generating a JSON string (https://stackoverflow.com/a/68591585)
-json_string=$(
-  jq --null-input \
-    --arg hostname "$(get_hostname)" \
-    --arg ip "$(get_ip_addr)" \
-    --arg ipmi "$(get_ipmi_addr)" \
-    --arg cpu "$(get_cpu_name)" \
-    --arg threads "$(get_threads)" \
-    --arg ram "$(get_ram_total)" \
-    --arg ram_sticks "$(get_ram_sticks)" \
-    --arg nvme "$(get_all_nvme)" \
-    --arg ssd "$(get_all_ssd)" \
-    --arg hdd "$(get_all_hdd)" \
-    '$ARGS.named'
-)
+# onram_client functions for example start stop restart etc.
+start_client(){
+    # https://stackoverflow.com/questions/48470049/build-a-json-string-with-bash-variables
+    # Generating a JSON string (https://stackoverflow.com/a/68591585)
+    json_string=$(
+    jq --null-input \
+        --arg hostname "$(get_hostname)" \
+        --arg ip "$(get_ip_addr)" \
+        --arg ipmi "$(get_ipmi_addr)" \
+        --arg cpu "$(get_cpu_name)" \
+        --arg threads "$(get_threads)" \
+        --arg ram "$(get_ram_total)" \
+        --arg ram_sticks "$(get_ram_sticks)" \
+        --arg nvme "$(get_all_nvme)" \
+        --arg ssd "$(get_all_ssd)" \
+        --arg hdd "$(get_all_hdd)" \
+        '$ARGS.named'
+    )
 
-printf "%s" "$json_string" > /tmp/onram_client.json
+    printf "%s" "$json_string" > /tmp/onram_client.json
 
-# curl -X POST -H "Content-Type: application/json" -d @FILENAME DESTINATION
+    curl --header "Content-Type: application/json" \
+    --request "DELETE" \
+    http://${api_endpoint}:${api_port}/data/$(get_hostname)
 
-curl --header "Content-Type: application/json" \
-  --request "DELETE" \
-  http://${api_endpoint}:${api_port}/data/$(get_hostname)
+    curl --header "Content-Type: application/json" \
+    --request "POST" \
+    --data "@/tmp/onram_client.json" \
+    http://${api_endpoint}:${api_port}/data
+}
 
-curl --header "Content-Type: application/json" \
-  --request "POST" \
-  --data "@/tmp/onram_client.json" \
-  http://${api_endpoint}:${api_port}/data
+stop_client(){
+    curl --header "Content-Type: application/json" \
+    --request "DELETE" \
+    http://${api_endpoint}:${api_port}/data/$(get_hostname)
+}
+
+
+
+
