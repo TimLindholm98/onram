@@ -1,7 +1,7 @@
 #!/bin/bash
 
-api_endpoint=""
-api_port=""
+api_endpoint="onram.enginit.se"
+api_port="5000"
 
 
 # Get short easy to look at values. 
@@ -75,9 +75,9 @@ printf "%s" "$json_string" > /tmp/onram_client.json
 
 curl --header "Content-Type: application/json" \
   --request "DELETE" \
-  http://10.21.30.200:5000/data/$(get_hostname)
+  http://${api_endpoint}:${api_port}/data/$(get_hostname)
 
 curl --header "Content-Type: application/json" \
   --request "POST" \
   --data "@/tmp/onram_client.json" \
-  http://10.21.30.200:5000/data
+  http://${api_endpoint}:${api_port}/data
