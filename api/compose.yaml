@@ -1,6 +1,7 @@
 services: 
   flask_sql_api: 
-    image: flask_sql_api 
+    image: onram_api
+    container_name: onram_api
     stop_signal: SIGINT
     security_opt:
       - label:disable
@@ -9,6 +10,7 @@ services:
 
   db:
     image: mysql
+    container_name: onram_sqldb
     security_opt:
       - label:disable
     environment:
@@ -25,6 +27,7 @@ services:
 # Not actually needed.
   adminer:
     image: adminer
+    container_name: adminer
     restart: always
     ports:
       - 8080:8080

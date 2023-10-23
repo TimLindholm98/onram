@@ -8,5 +8,6 @@
     "ram_sticks": "8",
     "nvme": "2",
     "ssd": "0",
-    "hdd": "12"
+    "hdd": "12",
+    "uptime": ""
   }

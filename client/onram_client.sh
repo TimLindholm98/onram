@@ -35,6 +35,9 @@ get_all_ssd(){
 get_all_hdd(){
     echo "$(lsblk -n -o name,size,rota,type /dev/sd* 2> /dev/null | awk '$NF ~ /disk/{print $1 "," $2 "," $3}' |  awk -F, '$NF ~ /1/{print $1 "," $2}' | wc -l)"
 }
+get_start_time(){
+    echo "$(date '+%Y/%m/%d-%H:%M.%S')"
+}
 
 
 # More information
@@ -68,6 +71,7 @@ start_client(){
         --arg nvme "$(get_all_nvme)" \
         --arg ssd "$(get_all_ssd)" \
         --arg hdd "$(get_all_hdd)" \
+        --arg start_time "$(get_start_time)" \
         '$ARGS.named'
     )
 

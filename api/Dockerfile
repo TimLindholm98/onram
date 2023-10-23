@@ -1,4 +1,4 @@
-FROM ubi9/python-39
+FROM registry.access.redhat.com/ubi9/python-39
 
 WORKDIR /usr/src/app
 

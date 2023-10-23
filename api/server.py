@@ -29,9 +29,10 @@ def add_data():
     nvme = request.json['nvme']
     ssd = request.json['ssd']
     hdd = request.json['hdd']
+    start_time = request.json['start_time']
     # https://stackoverflow.com/questions/69887741/execute-takes-2-positional-arguments-but-3-were-given-for-db-execute-flask-p
-    values = (hostname, ip, ipmi, cpu, threads, ram, ram_sticks, nvme, ssd, hdd)
-    statement = "INSERT INTO test_suite (hostname, ip, ipmi, cpu, threads, ram, ram_sticks, nvme, ssd, hdd) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    values = (hostname, ip, ipmi, cpu, threads, ram, ram_sticks, nvme, ssd, hdd, start_time)
+    statement = "INSERT INTO test_suite (hostname, ip, ipmi, cpu, threads, ram, ram_sticks, nvme, ssd, hdd, start_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cur.execute( statement, values )
     mysql.connection.commit()
     cur.close()
