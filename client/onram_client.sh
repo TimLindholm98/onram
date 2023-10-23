@@ -36,7 +36,7 @@ get_all_hdd(){
     echo "$(lsblk -n -o name,size,rota,type /dev/sd* 2> /dev/null | awk '$NF ~ /disk/{print $1 "," $2 "," $3}' |  awk -F, '$NF ~ /1/{print $1 "," $2}' | wc -l)"
 }
 get_start_time(){
-    echo "$(date '+%Y/%m/%d-%H:%M.%S')"
+    echo "$(date '+%Y/%m/%d %H:%M:%S')"
 }
 
 
