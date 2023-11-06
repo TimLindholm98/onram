@@ -94,7 +94,7 @@ def change_power_state_by_hostname(hostname):
     power_state = request.json['power_state']
     date_time = request.json['date_time']
     values = (power_state, date_time, hostname)
-    statement = 'UPDATE test_suite SET power_state = %s, date_time = "%s" WHERE hostname = %s'
+    statement = 'UPDATE test_suite SET power_state = %s, date_time = %s WHERE hostname = %s'
     cur = mysql.connection.cursor()
     cur.execute( statement, values)
     mysql.connection.commit()
