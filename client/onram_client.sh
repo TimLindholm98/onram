@@ -35,8 +35,9 @@ get_all_ssd(){
 get_all_hdd(){
     echo "$(lsblk -n -o name,size,rota,type /dev/sd* 2> /dev/null | awk '$NF ~ /disk/{print $1 "," $2 "," $3}' |  awk -F, '$NF ~ /1/{print $1 "," $2}' | wc -l)"
 }
-get_start_time(){
-    echo "$(date '+%Y/%m/%d %H:%M:%S')"
+get_date_time(){
+    TZ="Europe/Stockholm"
+    echo "$(date '+%Y-%m-%d %H:%M:%S')"
 }
 
 
@@ -71,10 +72,10 @@ start_client(){
         --arg nvme "$(get_all_nvme)" \
         --arg ssd "$(get_all_ssd)" \
         --arg hdd "$(get_all_hdd)" \
-        --arg start_time "$(get_start_time)" \
+        --arg power_state "up" \
+        --arg date_time "$(get_date_time)" \
         '$ARGS.named'
     )
-
     printf "%s" "$json_string" > /tmp/onram_client.json
 
     curl --header "Content-Type: application/json" \
@@ -88,9 +89,33 @@ start_client(){
 }
 
 stop_client(){
+    json_string=$(
+    jq --null-input \
+        --arg power_state "down" \
+        --arg date_time "$(get_date_time)" \
+        '$ARGS.named'
+    )
+    printf "%s" "$json_string" > /tmp/onram_client.json
+
     curl --header "Content-Type: application/json" \
-    --request "DELETE" \
-    http://${api_endpoint}:${api_port}/data/$(get_hostname)
+    --request "PUT" \
+    --data "@/tmp/onram_client.json" \
+    http://${api_endpoint}:${api_port}/data/power_state/$(get_hostname)
+}
+
+finish_client(){
+    json_string=$(
+    jq --null-input \
+        --arg power_state "done" \
+        --arg date_time "$(get_date_time)" \
+        '$ARGS.named'
+    )
+    printf "%s" "$json_string" > /tmp/onram_client.json
+
+    curl --header "Content-Type: application/json" \
+    --request "PUT" \
+    --data "@/tmp/onram_client.json" \
+    http://${api_endpoint}:${api_port}/data/power_state/$(get_hostname)
 }
 
 

@@ -6,7 +6,7 @@ install_prequisites :
 		make
 
 build : 
-	podman build --tag flask_sql_api .
+	podman build --tag onram_api .
 
 down : 
 	podman-compose down
@@ -23,4 +23,4 @@ reset: down remove_data up
 
 reinstall: down remove_data build up
 
-setup: install_prequisites build up
+setup: install_prequisites build up	

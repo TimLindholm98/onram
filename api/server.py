@@ -4,7 +4,6 @@ from flask import Flask, jsonify
 from flask_mysqldb import MySQL
 from flask import request
 from json2html import *
-from datetime import datetime
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'db'
@@ -18,7 +17,7 @@ mysql = MySQL(app)
 # ToDo
 #
 #   1. Change all cur.execute to use the variables "statement" and "values"
-#
+#  
 #
 
 
@@ -37,10 +36,10 @@ def add_data():
     ssd = request.json['ssd']
     hdd = request.json['hdd']
     power_state = request.json['power_state']
-    start_time = request.json['start_time']
+    date_time = request.json['date_time']
     # https://stackoverflow.com/questions/69887741/execute-takes-2-positional-arguments-but-3-were-given-for-db-execute-flask-p
-    values = (hostname, ip, ipmi, cpu, threads, ram, ram_sticks, nvme, ssd, hdd, power_state, start_time)
-    statement = "INSERT INTO test_suite (hostname, ip, ipmi, cpu, threads, ram, ram_sticks, nvme, ssd, hdd, power_state, start_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    values = (hostname, ip, ipmi, cpu, threads, ram, ram_sticks, nvme, ssd, hdd, power_state, date_time)
+    statement = "INSERT INTO test_suite (hostname, ip, ipmi, cpu, threads, ram, ram_sticks, nvme, ssd, hdd, power_state, date_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cur.execute( statement, values )
     mysql.connection.commit()
     cur.close()
@@ -81,25 +80,38 @@ def get_data_by_hostname(hostname):
     return jsonify(data)
 
 # Power State
-@app.route('/data/<string:hostname>/power_state/', methods=['GET'])
+@app.route('/data/power_state/<string:hostname>', methods=['GET'])
 def get_power_state_by_hostname(hostname):
-    values = (hostname)
     statement = 'SELECT power_state FROM test_suite WHERE hostname = %s'
     cur = mysql.connection.cursor()
+    cur.execute( statement, (hostname,))
+    data = cur.fetchall()
+    cur.close()
+    return jsonify(data)
+
+@app.route('/data/power_state/<string:hostname>', methods=['PUT'])
+def change_power_state_by_hostname(hostname):
+    power_state = request.json['power_state']
+    date_time = request.json['date_time']
+    values = (power_state, date_time, hostname)
+    statement = 'UPDATE test_suite SET power_state = %s, date_time = "%s" WHERE hostname = %s'
+    cur = mysql.connection.cursor()
     cur.execute( statement, values)
+    mysql.connection.commit()
     cur.close()
     return jsonify({'message': 'Power state changed successfully'})
 
-@app.route('/data/<string:hostname>/power_state/<string:power_state>', methods=['PUT'])
-def change_power_state_by_hostname(hostname, power_state):
-    now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    values = (hostname, dt_string, power_state)
-    statement = 'UPDATE test_suite SET power_state = "%s", date_time = %s WHERE hostname = %s'
+# Auto cleaning / housekeeping
+@app.route('/data/housekeeping', methods=['GET'])
+def get_housekeeping():
+    statement = 'SELECT * FROM test_suite WHERE date_time >= (curdate() - 7)'
     cur = mysql.connection.cursor()
-    cur.execute( statement, values)
+    cur.execute( statement, )
+    data = cur.fetchall()
     cur.close()
-    return jsonify({'message': 'Power state changed successfully'})
+    return jsonify(data)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
