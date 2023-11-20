@@ -112,7 +112,7 @@ def get_housekeeping():
     return jsonify(data)
 
 @app.route('/data/housekeeping', methods=['DELETE'])
-def get_housekeeping():
+def delete_housekeeping():
     statement = 'DELETE * FROM test_suite WHERE date_time >= (curdate() - 7) AND power_state = down'
     cur = mysql.connection.cursor()
     cur.execute( statement, )
