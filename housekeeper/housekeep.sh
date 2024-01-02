@@ -40,7 +40,7 @@ down_host(){
     # ping hostname from $1
     # if down stop_client function
     local host="$1"
-    ping -q -w 1 ${host} ; exit_code=$?
+    ping -q -w 1 ${host} &> /dev/null ; exit_code=$?
 
     if [[ $exit_code != 0 ]]; then
         stop_client ${host}
