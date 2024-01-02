@@ -113,12 +113,19 @@ def get_housekeeping():
 
 @app.route('/data/housekeeping', methods=['DELETE'])
 def delete_housekeeping():
-    statement = 'DELETE * FROM test_suite WHERE date_time >= (curdate() - 7) AND power_state = down'
+    # statement = 'DELETE FROM test_suite WHERE date_time >= (curdate() - 7)'
+    # cur = mysql.connection.cursor()
+    # cur.execute( statement, )
+    # data = cur.fetchall()
+    # cur.close()
+    # return jsonify(data)
+
+    statement = 'DELETE FROM test_suite WHERE date_time >= (curdate() - 7) AND power_state = "finished"'
     cur = mysql.connection.cursor()
     cur.execute( statement, )
-    data = cur.fetchall()
+    mysql.connection.commit()
     cur.close()
-    return jsonify(data)
+    return jsonify({'message': 'Housekeeper deleted data successfully'})
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

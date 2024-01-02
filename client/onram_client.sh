@@ -106,7 +106,7 @@ stop_client(){
 finish_client(){
     json_string=$(
     jq --null-input \
-        --arg power_state "done" \
+        --arg power_state "finished" \
         --arg date_time "$(get_date_time)" \
         '$ARGS.named'
     )
@@ -125,4 +125,6 @@ elif [[ "$1" == "start" ]]; then
     start_client
 elif [[ "$1" == "stop" ]]; then
     stop_client
+elif [[ "$1" == "finish" ]]; then
+    finish_client
 fi
