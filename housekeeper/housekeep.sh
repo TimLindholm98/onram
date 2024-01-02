@@ -55,22 +55,26 @@ get_hosts(){
 }
 
 down_hosts(){
-    for host in $(get_hosts up | jq .hostname | tr -d '"'); do
-        ping -q -w 1 ${host} &> /dev/null ; exit_code=$?
+    if [[ $(get_hosts up) != "[]" ]]; then
+        for host in $(get_hosts up | jq .hostname | tr -d '"'); do
+            ping -q -w 1 ${host} &> /dev/null ; exit_code=$?
 
-        if [[ $exit_code != 0 ]]; then
-            stop_client ${host}
-            echo "${host} is now down"
-        fi
-    done
+            if [[ $exit_code != 0 ]]; then
+                stop_client ${host}
+                echo "${host} is now down"
+            fi
+        done
+    fi
 }
 
 
 finish_hosts(){
-    for i in $(get_hosts housekeep | jq .hostname | tr -d '"'); do
-        finish_client $i
-        echo "${host} is now finished"
-    done
+    if [[ $(get_hosts housekeep) != "[]" ]]; then
+        for i in $(get_hosts housekeep | jq .hostname | tr -d '"'); do
+            finish_client $i
+            echo "${host} is now finished"
+        done
+    fi
 }
 
 # Starting clean up
