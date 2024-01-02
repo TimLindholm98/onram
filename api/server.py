@@ -104,7 +104,7 @@ def change_power_state_by_hostname(hostname):
 # Auto cleaning / housekeeping
 @app.route('/data/housekeeping', methods=['GET'])
 def get_housekeeping():
-    statement = 'SELECT * FROM test_suite WHERE date_time >= (curdate() - 5) AND power_state = "down"'
+    statement = 'SELECT * FROM test_suite WHERE datediff(now(), data_time) >= 5 AND power_state = "down"'
     cur = mysql.connection.cursor()
     cur.execute( statement, )
     data = cur.fetchall()
@@ -121,7 +121,7 @@ def delete_housekeeping():
     # cur.close()
     # return jsonify(data)
 
-    statement = 'DELETE FROM test_suite WHERE date_time = (curdate() - 5) AND power_state = "down"'
+    statement = 'DELETE FROM test_suite WHERE datediff(now(), data_time) >= 5 AND power_state = "down"'
     cur = mysql.connection.cursor()
     cur.execute( statement, )
     mysql.connection.commit()
