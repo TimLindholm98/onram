@@ -8,27 +8,11 @@ get_date_time(){
     echo "$(date '+%Y-%m-%d %H:%M:%S')"
 }
 
-stop_client(){
+host_to_down(){
     local hostname="$1"
     json_string=$(
     jq --null-input \
         --arg power_state "down" \
-        --arg date_time "$(get_date_time)" \
-        '$ARGS.named'
-    )
-    printf "%s" "$json_string" > /tmp/onram_client.json
-
-    curl --header "Content-Type: application/json" \
-    --request "PUT" \
-    --data "@/tmp/onram_client.json" \
-    http://${api_endpoint}:${api_port}/data/power_state/${hostname}
-}
-
-finish_client(){
-    local hostname="$1"
-    json_string=$(
-    jq --null-input \
-        --arg power_state "finished" \
         --arg date_time "$(get_date_time)" \
         '$ARGS.named'
     )
@@ -60,7 +44,7 @@ down_hosts(){
             ping -q -w 1 ${host} &> /dev/null ; exit_code=$?
 
             if [[ $exit_code != 0 ]]; then
-                stop_client ${host}
+                host_to_down ${host}
                 echo "${host} is now down"
             fi
         done
@@ -69,12 +53,9 @@ down_hosts(){
 
 
 finish_hosts(){
-    if [[ $(get_hosts housekeep) != "[]" ]]; then
-        for i in $(get_hosts housekeep | jq .hostname | tr -d '"'); do
-            finish_client $i
-            echo "${host} is now finished"
-        done
-    fi
+    curl --header "Content-Type: application/json" \
+    --request "DELETE" \
+    http://${api_endpoint}:${api_port}/data/housekeeping
 }
 
 # Starting clean up

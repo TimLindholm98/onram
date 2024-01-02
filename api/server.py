@@ -121,7 +121,7 @@ def delete_housekeeping():
     # cur.close()
     # return jsonify(data)
 
-    statement = 'DELETE FROM test_suite WHERE date_time >= (curdate() - 1) AND power_state = "finished"'
+    statement = 'DELETE FROM test_suite WHERE date_time >= (curdate() - 5) AND power_state = "down"'
     cur = mysql.connection.cursor()
     cur.execute( statement, )
     mysql.connection.commit()
