@@ -44,8 +44,8 @@ down_host(){
 
     if [[ $exit_code != 0 ]]; then
         stop_client ${host}
+        echo "${host} is now down"
     fi
-    echo "${host} is now down"
 }
 
 down_hosts(){
