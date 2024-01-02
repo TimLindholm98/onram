@@ -33,8 +33,6 @@ get_hosts(){
         echo $(curl -s http://onram.enginit.se:5000/data | jq '.[] | select(.power_state=="down")')
     elif [[ $1 == "housekeep" ]]; then
         echo $(curl -s http://onram.enginit.se:5000/data/housekeeping | jq '.[]' )
-    elif [[ $1 == "finished" ]]; then
-        echo $(curl -s http://onram.enginit.se:5000/data | jq '.[] | select(.power_state=="finished")')
     fi
 }
 
