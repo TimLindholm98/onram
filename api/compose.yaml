@@ -1,5 +1,5 @@
 services: 
-  flask_sql_api: 
+  onram_api: 
     image: onram_api
     container_name: onram_api
     stop_signal: SIGINT
@@ -8,9 +8,9 @@ services:
     ports: 
       - '5000:5000'
 
-  db:
+  onram_db:
     image: mysql
-    container_name: onram_sqldb
+    container_name: onram_db
     security_opt:
       - label:disable
     environment:
